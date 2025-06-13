@@ -25,6 +25,7 @@ class TablesNotifier extends StateNotifier<List<TableOrder>> {
           (s) => s.name == dbEntry['status'],
           orElse: () => TableStatus.free,
         ),
+        items: [],
       );
     });
     state = loadedTables;
@@ -34,9 +35,59 @@ class TablesNotifier extends StateNotifier<List<TableOrder>> {
     final updatedTables = [...state];
     final index = updatedTables.indexWhere((t) => t.tableNumber == tableNumber);
     if (index != -1) {
-      updatedTables[index] = updatedTables[index].copyWith(status: status);
+      final updatedTable = updatedTables[index].copyWith(status: status);
+      updatedTables[index] = updatedTable;
       state = updatedTables;
       await DatabaseHelper.instance.saveTableStatus(tableNumber, status.name);
+    }
+  }
+
+  void addItem(int tableNumber, MenuItem item) async {
+    final updatedTables = [...state];
+    final index = updatedTables.indexWhere((t) => t.tableNumber == tableNumber);
+    if (index != -1) {
+      final table = updatedTables[index];
+      final existingIndex = table.items.indexWhere((oi) => oi.item.name == item.name);
+      List<OrderItem> newItems = List.from(table.items);
+
+      if (existingIndex != -1) {
+        newItems[existingIndex] =
+            newItems[existingIndex].copyWith(quantity: newItems[existingIndex].quantity + 1);
+      } else {
+        newItems.add(OrderItem(item: item, quantity: 1));
+      }
+
+      final updatedTable = table.copyWith(items: newItems, status: TableStatus.occupied);
+      updatedTables[index] = updatedTable;
+      state = updatedTables;
+
+      await DatabaseHelper.instance.saveTableStatus(tableNumber, TableStatus.occupied.name);
+    }
+  }
+
+  void removeItem(int tableNumber, MenuItem item) async {
+    final updatedTables = [...state];
+    final index = updatedTables.indexWhere((t) => t.tableNumber == tableNumber);
+    if (index != -1) {
+      final table = updatedTables[index];
+      final existingIndex = table.items.indexWhere((oi) => oi.item.name == item.name);
+      List<OrderItem> newItems = List.from(table.items);
+
+      if (existingIndex != -1) {
+        if (newItems[existingIndex].quantity > 1) {
+          newItems[existingIndex] =
+              newItems[existingIndex].copyWith(quantity: newItems[existingIndex].quantity - 1);
+        } else {
+          newItems.removeAt(existingIndex);
+        }
+      }
+
+      final newStatus = newItems.isEmpty ? TableStatus.free : table.status;
+      final updatedTable = table.copyWith(items: newItems, status: newStatus);
+      updatedTables[index] = updatedTable;
+      state = updatedTables;
+
+      await DatabaseHelper.instance.saveTableStatus(tableNumber, newStatus.name);
     }
   }
 
@@ -45,52 +96,4 @@ class TablesNotifier extends StateNotifier<List<TableOrder>> {
 
   TableOrder getTable(int tableNumber) =>
       state.firstWhere((t) => t.tableNumber == tableNumber);
-
-  void addItem(int tableNumber, MenuItem item) {
-    final updatedTables = [...state];
-    final index = updatedTables.indexWhere((t) => t.tableNumber == tableNumber);
-    if (index != -1) {
-      final currentTable = updatedTables[index];
-      final existingItemIndex = currentTable.items.indexWhere((i) => i.item.name == item.name);
-      if (existingItemIndex != -1) {
-        final updatedItems = [...currentTable.items];
-        final existingItem = updatedItems[existingItemIndex];
-        updatedItems[existingItemIndex] =
-            OrderItem(item: item, quantity: existingItem.quantity + 1);
-        updatedTables[index] = currentTable.copyWith(items: updatedItems);
-      } else {
-        updatedTables[index] = currentTable.copyWith(
-          items: [...currentTable.items, OrderItem(item: item, quantity: 1)],
-          status: TableStatus.occupied,
-        );
-      }
-      state = updatedTables;
-    }
-  }
-
-  void removeItem(int tableNumber, MenuItem item) {
-    final updatedTables = [...state];
-    final index = updatedTables.indexWhere((t) => t.tableNumber == tableNumber);
-    if (index != -1) {
-      final currentTable = updatedTables[index];
-      final updatedItems = [...currentTable.items];
-      final existingItemIndex = updatedItems.indexWhere((i) => i.item.name == item.name);
-
-      if (existingItemIndex != -1) {
-        final existingItem = updatedItems[existingItemIndex];
-        if (existingItem.quantity > 1) {
-          updatedItems[existingItemIndex] =
-              OrderItem(item: item, quantity: existingItem.quantity - 1);
-        } else {
-          updatedItems.removeAt(existingItemIndex);
-        }
-
-        updatedTables[index] = currentTable.copyWith(
-          items: updatedItems,
-          status: updatedItems.isEmpty ? TableStatus.free : TableStatus.occupied,
-        );
-        state = updatedTables;
-      }
-    }
-  }
 }
