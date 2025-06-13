@@ -55,5 +55,5 @@ This app follows a simple **MVVM-style architecture** using:
 
 1. **Clone the repo:**
    ```bash
-   git clone https://github.com/your-username/sample_app1.git
+   git clone https://github.com/Santhiyagj/sample_app1.git
    cd sample_app1
