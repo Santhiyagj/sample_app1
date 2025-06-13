@@ -1,16 +1,59 @@
-# sample_app
+# 🍽️ sample_app1 - Flutter Restaurant Order App
 
-A new Flutter project.
+A complete restaurant order management app built using **Flutter**, **SQLite**, and **Riverpod**. It enables waiters to take orders, manage table status, and persist data locally with SQLite.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🏗️ Architecture Overview
 
-A few resources to get you started if this is your first Flutter project:
+This app follows a simple **MVVM-style architecture** using:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 📁 `models/`
+- `MenuItem`: Represents individual food items
+- `OrderItem`: Food items with quantity added to a table
+- `TableOrder`: Represents each table’s orders and status
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 📁 `providers/`
+- `tablesProvider`: Manages all table-related state (status, items)
+- `themeProvider`: Switch between light/dark mode
+
+### 📁 `db/`
+- `DatabaseHelper`: SQLite logic for persisting orders and table statuses
+
+### 📁 `screens/`
+- `HomeScreen`: List of tables with their status
+- `OrderScreen`: Add/remove items and request bills
+- `OrdersViewScreen`: View completed orders
+
+---
+
+## 🧠 Assumptions
+
+- The restaurant has **10 static tables**
+- All menu items are hardcoded for simplicity
+- Table statuses (`Free`, `Occupied`, `Requesting Bill`) are saved in SQLite
+- A table becomes `Occupied` when items are added
+- Orders are stored in SQLite when bill is requested
+- The app works **offline**
+- Data remains even after app restart
+
+---
+
+## ✅ Features
+
+- View table statuses (Free / Occupied / Requesting Bill)
+- Add/remove items to/from a table
+- Automatically change table status
+- Request bill and persist orders
+- View past orders
+- Light/dark mode toggle
+- SQLite persistence of all table statuses
+
+---
+
+## 🚀 Getting Started
+
+1. **Clone the repo:**
+   ```bash
+   git clone https://github.com/Santhiyagj/sample_app1.git
+   cd sample_app1
