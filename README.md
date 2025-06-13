@@ -57,3 +57,55 @@ This app follows a simple **MVVM-style architecture** using:
    ```bash
    git clone https://github.com/Santhiyagj/sample_app1.git
    cd sample_app1
+   flutter pub get
+   flutter run
+
+## 📦 Build APK
+To generate a release APK for Android:
+
+bash
+flutter build apk --release
+
+The APK will be located at:
+
+swift
+build/app/outputs/flutter-apk/app-release.apk
+
+**💡 Tech Stack **
+Category	Package
+UI Framework	Flutter
+State Management	Riverpod
+Local Database	SQLite (sqflite)
+Path Support	path_provider
+PDF Generation	pdf, printing, share_plus
+Theming	Flutter ThemeMode
+
+👤 Author
+Santhiyag J
+GitHub: @Santhiyagj
+
+📄 License
+This project is licensed under the MIT License.
+
+You are free to use, modify, and distribute this software with attribution.
+
+yaml
+
+
+---
+
+✅ You can now:
+
+- Save this content as your `README.md`
+- Add screenshots under `assets/screenshots/`
+- Upload demo video to YouTube and update `YOUR_VIDEO_ID`
+
+Let me know if you want help creating a professional `LICENSE` file or uploading APK/demo!
+
+
+## 📸 Screenshots
+
+| Home Screen | Order Screen | Bill Screen |
+|-------------|--------------|-------------|
+| ![Home](assets/screenshots/home.png) | ![Order](assets/screenshots/order.png) | ![Bill](assets/screenshots/bill.png) |
+
